@@ -9,5 +9,9 @@
   :components ((:file "package")
                (:file "utils")
                (:file "protocols")
+               (:file "request")
+               (:file "response")
+               (:file "handler")
+               (:file "app")
                (:file "server")))
 

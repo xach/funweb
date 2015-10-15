@@ -7,6 +7,10 @@
     :initarg :server
     :reader server)))
 
+(defmethod hunchentoot:acceptor-dispatch-request ((acceptor acceptor)
+                                                  request)
+  (funcall (dispatcher (server acceptor)) request))
+
 (defclass server ()
   ((host
     :initarg :host
@@ -22,6 +26,10 @@
     :initarg :startedp
     :initform nil
     :accessor startedp)
+   (dispatcher
+    :initarg :dispatcher
+    :reader dispatcher
+    :initform 'server-dispatcher)
    (apps
     :initarg :apps
     :initform (make-hash-table)
@@ -77,3 +85,23 @@
 
 (defun stop-server ()
   (stop *server*))
+
+
+(defmethod find-app (name (server server))
+  (values (gethash name (apps server))))
+
+(defmethod (setf find-app) (new-value name (server server))
+  (check-type new-value app)
+  (setf (gethash name (apps server)) new-value))
+
+(defun server-dispatcher (request)
+  (let ((response
+         (block nil
+           (map-apps (lambda (app)
+                       (let ((handler (find-app-handler request app)))
+                         (when handler
+                           (return (funcall (fun handler) request)))))
+                     *server*))))
+    (if response
+        (send-response response)
+        (send-response (make-not-found-response)))))
