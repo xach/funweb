@@ -28,9 +28,19 @@
 (defun return-response (response)
   (throw 'response response))
 
+
+;;; Shortcuts for direct responses
+
 (defun redirect (location &key permanently)
   (return-response (make-redirection-response location
                                               :permanently permanently )))
+
+(defun send-file (pathname &key content-type)
+  (return-response (make-file-response pathname
+                                       :content-type content-type)))
+
+
+;;; Sending a response with Hunchentoot
 
 (defun send-response (response)
   (etypecase response
