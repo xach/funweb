@@ -96,12 +96,13 @@
 
 (defun get-response (request server)
   (let ((response
-         (block nil
-           (map-apps (lambda (app)
-                       (let ((handler (find-app-handler request app)))
-                         (when handler
-                           (return (funcall (fun handler) request)))))
-                     server))))
+         (catch 'response
+           (block nil
+             (map-apps (lambda (app)
+                         (let ((handler (find-app-handler request app)))
+                           (when handler
+                             (return (funcall (fun handler) request)))))
+                       server)))))
     (or response
         (make-not-found-response))))
 

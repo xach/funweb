@@ -22,6 +22,16 @@
 (defun make-not-found-response ()
   (list :not-found t))
 
+(defun make-file-response (pathname &key content-type)
+  (list :file pathname :content-type content-type))
+
+(defun return-response (response)
+  (throw 'response response))
+
+(defun redirect (location &key permanently)
+  (return-response (make-redirection-response location
+                                              :permanently permanently )))
+
 (defun send-response (response)
   (etypecase response
     (string
@@ -42,4 +52,7 @@
        (:not-found
         (setf (tbnl:return-code*) 404)
         (setf (tbnl:content-type*) "text/plain")
-        (tbnl:abort-request-handler "404 - not found (fw)"))))))
+        (tbnl:abort-request-handler "404 - not found (fw)"))
+       (:file
+        (tbnl:handle-static-file (getf response :file)
+                                 (getf response :content-type)))))))
