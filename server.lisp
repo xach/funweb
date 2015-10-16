@@ -105,3 +105,8 @@
     (if response
         (send-response response)
         (send-response (make-not-found-response)))))
+
+(defmethod configure :after ((server server) plist)
+  ;; FIXME: This is to update the dispatch funs...maybe do it via some
+  ;; other method?
+  (map-apps (lambda (app) (configure app nil)) server))
