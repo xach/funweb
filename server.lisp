@@ -94,17 +94,19 @@
   (check-type new-value app)
   (setf (gethash name (apps server)) new-value))
 
-(defun server-dispatcher (request)
+(defun get-response (request server)
   (let ((response
          (block nil
            (map-apps (lambda (app)
                        (let ((handler (find-app-handler request app)))
                          (when handler
                            (return (funcall (fun handler) request)))))
-                     *server*))))
-    (if response
-        (send-response response)
-        (send-response (make-not-found-response)))))
+                     server))))
+    (or response
+        (make-not-found-response))))
+
+(defun server-dispatcher (request)
+  (send-response (get-response request *server*)))
 
 (defmethod configure :after ((server server) plist)
   ;; FIXME: This is to update the dispatch funs...maybe do it via some
