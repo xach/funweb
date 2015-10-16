@@ -22,6 +22,10 @@
 (defmethod http-method ((request tbnl:request))
   (tbnl:request-method request))
 
+(defmethod parameter-value (name (request tbnl:request))
+  (or (tbnl:get-parameter (string-downcase name) request)
+      (tbnl:post-parameter (string-downcase name) request)))
+
 (defclass mock-request ()
   ((host
     :initarg :host
