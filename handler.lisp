@@ -11,7 +11,7 @@
     :reader path-suffix)
    (fun
     :initarg :fun
-    :reader fun)
+    :accessor fun)
    (app
     :initarg :app
     :reader app)))

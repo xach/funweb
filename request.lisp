@@ -17,7 +17,7 @@
         80)))
 
 (defmethod url-path ((request tbnl:request))
-  (tbnl:request-uri request))
+  (tbnl:script-name request))
 
 (defmethod http-method ((request tbnl:request))
   (tbnl:request-method request))
