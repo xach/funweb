@@ -22,22 +22,26 @@
   (check-type path-suffix string)
   (let ((app (find-app app-name *server*))
         (handler (gensym))
-        (app-var (gensym)))
+        (app-var (gensym))
+        (fun (gensym)))
     (unless app
       (error "Unknown app -- ~S" app-name))
     `(let* ((,app-var (find-app ',app-name *server*))
-            (,handler (make-instance 'handler
-                                    :http-method ',http-method
-                                    :path-suffix ',path-suffix
-                                    :app ,app-var
-                                    :fun (lambda (*request*)
-                                           (let ,(loop for parameter in parameters
-                                                       collect `(,parameter
-                                                                 (parameter-value ',parameter *request*)))
-                                             (declare (ignorable ,@parameters))
-                                             ,@body)))))
-       (setf (find-handler ',http-method ',path-suffix ,app-var)
-             ,handler)
+            (,fun (lambda (*request*)
+                    (let ,(loop for parameter in parameters
+                                collect `(,parameter
+                                          (parameter-value ',parameter *request*)))
+                      (declare (ignorable ,@parameters))
+                      ,@body)))
+            (,handler (find-handler ',http-method ',path-suffix ,app-var)))
+       (if ,handler
+           (setf (fun ,handler) ,fun)
+           (setf (find-handler ',http-method ',path-suffix ,app-var)
+                  (make-instance 'handler
+                                     :http-method ',http-method
+                                     :path-suffix ',path-suffix
+                                     :app ,app-var
+                                     :fun ,fun)))
        t)))
 
 
