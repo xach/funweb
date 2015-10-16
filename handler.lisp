@@ -44,5 +44,7 @@
                                      :fun ,fun)))
        t)))
 
+(defmethod (setf fun) :after (new-value (handler handler))
+  (configure (app handler) nil))
 
 

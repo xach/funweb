@@ -164,4 +164,8 @@
 (defun find-app-handler (request app)
   (funcall (dispatch-fun app) request))
 
-
+(defmethod (setf find-handler) :after ((new-value t)
+                                       (http-method t)
+                                       (path-suffix t)
+                                       (app app))
+  (configure app nil))
