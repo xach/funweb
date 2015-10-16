@@ -45,7 +45,7 @@
     :reader parameters)))
 
 (defmethod parameter-value (name (request mock-request))
-  (getf name (parameters request)))
+  (getf (parameters request) name))
 
 (defmethod print-object ((request mock-request) stream)
   (print-unreadable-object (request stream :type t :identity t)
