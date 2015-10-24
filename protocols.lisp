@@ -50,6 +50,8 @@
 (defgeneric url-path (request))
 (defgeneric parameter-value (name request))
 (defgeneric header-value (name request))
+(defgeneric request-property (name request))
+(defgeneric (setf request-property) (new-value name request))
 
 
 ;;; Server

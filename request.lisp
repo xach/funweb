@@ -26,6 +26,12 @@
   (or (tbnl:get-parameter (string-downcase name) request)
       (tbnl:post-parameter (string-downcase name) request)))
 
+(defmethod (setf request-property) (new-value name (request tbnl:request))
+  (setf (tbnl:aux-request-value name request) new-value))
+
+(defmethod request-property (name (request tbnl:request))
+  (tbnl:aux-request-value name request))
+
 (defclass mock-request ()
   ((host
     :initarg :host
@@ -42,7 +48,11 @@
    (parameters
     :initarg :parameters
     :initform nil
-    :reader parameters)))
+    :reader parameters)
+   (properties
+    :initarg :properties
+    :initform (make-hash-table)
+    :reader properties)))
 
 (defmethod parameter-value (name (request mock-request))
   (getf (parameters request) name))
@@ -54,6 +64,12 @@
             (port request)
             (http-method request)
             (url-path request))))
+
+(defmethod (setf request-property) (new-value name (request mock-request))
+  (setf (gethash name (properties request)) new-value))
+
+(defmethod request-property (name (request mock-request))
+  (gethash name (properties request)))
 
 (defun make-mock-request (host port method path
                           &rest parameters &key &allow-other-keys)
