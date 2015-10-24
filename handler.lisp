@@ -37,11 +37,11 @@
        (if ,handler
            (setf (fun ,handler) ,fun)
            (setf (find-handler ',http-method ',path-suffix ,app-var)
-                  (make-instance 'handler
-                                     :http-method ',http-method
-                                     :path-suffix ',path-suffix
-                                     :app ,app-var
-                                     :fun ,fun)))
+                 (make-instance 'handler
+                                :http-method ',http-method
+                                :path-suffix ',path-suffix
+                                :app ,app-var
+                                :fun ,fun)))
        t)))
 
 (defmethod (setf fun) :after (new-value (handler handler))
