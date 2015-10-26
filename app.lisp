@@ -158,8 +158,20 @@
                (when (wild-equals host app-host)
                  (two-level-lookup table (http-method request) path))))))))
 
+(defun dispatch-functions (app)
+  (let ((path (app-hosted-url-p (output-url app)))))
+  (list (make-handler-dispatcher app)
+        (make-directory-dispatcher (output-directory app)
+                                   (output-url-prefix app))))
+
+(defun make-dispatch-fun (app)
+  (let ((dispatchers (dispatch-functions app)))
+    (lambda (request)
+      (some (callfun request) dispatchers))))
+
 (defmethod configure :after ((app app) plist)
-  (setf (dispatch-fun app) (make-dispatch-fun app)))
+  (when (configuredp app)
+    (setf (dispatch-fun app) (make-dispatch-fun app))))
 
 (defun find-app-handler (request app)
   (funcall (dispatch-fun app) request))
