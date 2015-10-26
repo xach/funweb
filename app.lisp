@@ -27,6 +27,9 @@
    (output-directory
     :initarg :output-directory
     :accessor output-directory)
+   (output-url
+    :initarg :output-url
+    :accessor output-url)
    (app-data-table
     :initarg :app-data-table
     :accessor app-data-table)
@@ -136,7 +139,15 @@
   (let ((t1 (gethash http-method table)))
     (gethash path t1)))
 
-(defun make-dispatch-fun (app)
+(defun app-hosted-url-p (app url)
+  "Returns the URL path of URL if it is hosted by the app (e.g. it has the same host and port), NIL otherwise."
+  (multiple-value-bind (protocol user host port path)
+      (quri:parse-uri url)
+    (declare (ignore protocol user port))
+    (when (equalp host (host app))
+      path)))
+
+(defun make-handler-dispatcher (app)
   "Given a fully configured app (with host and path prefix),
   create a closure that takes a request object and returns a handler
   to handle it, or NIL if no handler matches."
@@ -159,10 +170,12 @@
                  (two-level-lookup table (http-method request) path))))))))
 
 (defun dispatch-functions (app)
-  (let ((path (app-hosted-url-p (output-url app)))))
-  (list (make-handler-dispatcher app)
-        (make-directory-dispatcher (output-directory app)
-                                   (output-url-prefix app))))
+  (let ((path (app-hosted-url-p app (output-url app))))
+    (list* (make-handler-dispatcher app)
+           (when path
+             (list
+              (make-directory-dispatcher (output-directory app)
+                                         path))))))
 
 (defun make-dispatch-fun (app)
   (let ((dispatchers (dispatch-functions app)))
@@ -181,3 +194,6 @@
                                        (path-suffix t)
                                        (app app))
   (configure app nil))
+
+(defmethod app ((app-name symbol))
+  (find-app app-name *server*))

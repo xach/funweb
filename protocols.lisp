@@ -92,6 +92,12 @@
      (format stream "No app is currently active"))))
 
 
+;;; Output files
+
+(defgeneric make-output-file (app name type))
+(defgeneric path (output))
+(defgeneric url (output))
+
 ;;; Handlers
 
 (defgeneric app (handler))
