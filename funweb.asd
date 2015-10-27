@@ -11,7 +11,7 @@
                (:file "protocols")
                (:file "request")
                (:file "response")
-               (:file "server-directory")
+               (:file "serve-directory")
                (:file "handler")
                (:file "app")
                (:file "output")
