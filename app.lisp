@@ -30,6 +30,12 @@
    (output-url
     :initarg :output-url
     :accessor output-url)
+   (static-directory
+    :initarg :static-directory
+    :accessor static-directory)
+   (static-url
+    :initarg :static-url
+    :accessor static-url )
    (app-data-table
     :initarg :app-data-table
     :accessor app-data-table)
@@ -170,12 +176,16 @@
                  (two-level-lookup table (http-method request) path))))))))
 
 (defun dispatch-functions (app)
-  (let ((path (app-hosted-url-p app (output-url app))))
-    (list* (make-handler-dispatcher app)
-           (when path
-             (list
-              (make-directory-dispatcher (output-directory app)
-                                         path))))))
+  (let ((output-path (app-hosted-url-p app (output-url app)))
+        (static-path (app-hosted-url-p app (static-url app))))
+    (remove nil
+            (list (make-handler-dispatcher app)
+                  (when output-path
+                    (make-directory-dispatcher (output-directory app)
+                                               output-path))
+                  (when static-path
+                    (make-directory-dispatcher (static-directory app)
+                                               static-path))))))
 
 (defun make-dispatch-fun (app)
   (let ((dispatchers (dispatch-functions app)))
