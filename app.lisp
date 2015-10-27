@@ -131,7 +131,7 @@
                                 (key (concatenate 'string
                                                   prefix
                                                   (path-suffix handler))))
-                            (setf (gethash key table) handler)))))
+                            (setf (gethash key table) (fun handler))))))
                     app))
     http-method-table))
 

@@ -14,5 +14,6 @@
                (:file "server-directory")
                (:file "handler")
                (:file "app")
+               (:file "output")
                (:file "server")))
 

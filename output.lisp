@@ -21,8 +21,8 @@
 
 
 (defmethod path ((output-file output-file))
-  (merge-pathnames (output-directory (app output-file))
-                   (pathname (suffix output-file))))
+  (merge-pathnames (pathname (suffix output-file))
+                   (output-directory (app output-file))))
 
 (defmethod url ((output-file output-file))
   (format nil "~A~A" (output-url (app output-file))

@@ -99,9 +99,9 @@
          (catch 'response
            (block nil
              (map-apps (lambda (app)
-                         (let ((handler (find-app-handler request app)))
-                           (when handler
-                             (return (funcall (fun handler) request)))))
+                         (let ((handler-fun (find-app-handler request app)))
+                           (when handler-fun
+                             (return (funcall handler-fun request)))))
                        server)))))
     (or response
         (make-not-found-response))))
