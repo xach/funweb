@@ -98,8 +98,9 @@
   (let ((response
          (catch 'response
            (block nil
-             (map-apps (lambda (app)
-                         (let ((handler-fun (find-app-handler request app)))
+             (map-apps (lambda (*app*)
+                         (let ((handler-fun (find-app-handler request
+                                                              *app*)))
                            (when handler-fun
                              (return (funcall handler-fun request)))))
                        server)))))
