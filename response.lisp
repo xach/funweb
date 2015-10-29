@@ -25,6 +25,9 @@
 (defun make-file-response (pathname &key content-type)
   (list :file pathname :content-type content-type))
 
+(defun make-error-response (error)
+  (list :error error))
+
 (defun return-response (response)
   (throw 'response response))
 
@@ -47,7 +50,7 @@
     (string
      response)
     (list
-     (case (first response)
+     (ecase (first response)
        (:body
         (let ((content-type (getf response :content-type))
               (body (second response)))
@@ -63,6 +66,10 @@
         (setf (tbnl:return-code*) 404)
         (setf (tbnl:content-type*) "text/plain")
         (tbnl:abort-request-handler "404 - not found (fw)"))
+       (:error
+        (setf (tbnl:return-code*) 500)
+        (setf (tbnl:content-type*) "text/plain")
+        (tbnl:abort-request-handler "500 - internal server error (fw)"))
        (:file
         (tbnl:handle-static-file (getf response :file)
                                  (getf response :content-type)))))))
