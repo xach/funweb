@@ -98,15 +98,17 @@
   (let ((response
          (catch 'response
            (block nil
-             (map-apps (lambda (*app*)
-                         (let ((handler-fun (find-app-handler request
-                                                              *app*)))
-                           (when handler-fun
-                             (handler-case
-                                 (return (funcall handler-fun request))
-                               (error (condition)
-                                 (return (make-error-response condition)))))))
-                       server)))))
+             (handler-bind ((error
+                             (lambda (condition)
+                               (return
+                                 (make-error-response condition
+                                                      :backtrace (backtrace-string))))))
+               (map-apps (lambda (*app*)
+                           (let ((handler-fun (find-app-handler request
+                                                                *app*)))
+                             (when handler-fun
+                               (return (funcall handler-fun request)))))
+                         server))))))
     (or response
         (make-not-found-response))))
 

@@ -32,3 +32,6 @@
   (lambda (fun)
     (funcall fun object)))
 
+(defun backtrace-string ()
+  (with-output-to-string (s)
+    (trivial-backtrace:print-backtrace-to-stream s)))

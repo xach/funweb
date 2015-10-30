@@ -5,6 +5,7 @@
   :author "Your Name <your.name@example.com>"
   :license "Specify license here"
   :depends-on (#:hunchentoot
+               #:trivial-backtrace
                #:html-template)
   :serial t
   :components ((:file "package")

@@ -25,8 +25,8 @@
 (defun make-file-response (pathname &key content-type)
   (list :file pathname :content-type content-type))
 
-(defun make-error-response (error)
-  (list :error error))
+(defun make-error-response (error &key backtrace)
+  (list :error error :backtrace backtrace))
 
 (defun return-response (response)
   (throw 'response response))
