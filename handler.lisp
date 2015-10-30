@@ -23,11 +23,15 @@
   (let ((app (find-app app-name *server*))
         (handler (gensym))
         (app-var (gensym))
-        (fun (gensym)))
+        (fun (gensym))
+        (handler-name (make-symbol (format nil "~A ~S ~S"
+                                           app-name
+                                           http-method
+                                           path-suffix))))
     (unless app
       (error "Unknown app -- ~S" app-name))
     `(let* ((,app-var (find-app ',app-name *server*))
-            (,fun (lambda (*request*)
+            (,fun (named-lambda ,handler-name (*request*)
                     (let ,(loop for parameter in parameters
                                 collect `(,parameter
                                           (parameter-value ',parameter *request*)))

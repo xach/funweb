@@ -35,3 +35,7 @@
 (defun backtrace-string ()
   (with-output-to-string (s)
     (trivial-backtrace:print-backtrace-to-stream s)))
+
+(defmacro named-lambda (name lambda-list &body body)
+  `(flet ((,name ,lambda-list ,@body))
+     #',name))
