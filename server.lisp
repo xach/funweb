@@ -94,6 +94,9 @@
   (check-type new-value app)
   (setf (gethash name (apps server)) new-value))
 
+(defun error-response-code ()
+  (random-file-string 8))
+
 (defun get-response (request server)
   (let ((response
          (catch 'response
@@ -102,6 +105,7 @@
                              (lambda (condition)
                                (return
                                  (make-error-response condition
+                                                      :code (error-response-code)
                                                       :backtrace (backtrace-string))))))
                (map-apps (lambda (*app*)
                            (let ((handler-fun (find-app-handler request

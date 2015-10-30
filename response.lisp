@@ -25,8 +25,8 @@
 (defun make-file-response (pathname &key content-type)
   (list :file pathname :content-type content-type))
 
-(defun make-error-response (error &key backtrace)
-  (list :error error :backtrace backtrace))
+(defun make-error-response (error &key backtrace code)
+  (list :error error :backtrace backtrace :code code))
 
 (defun return-response (response)
   (throw 'response response))
@@ -69,7 +69,15 @@
        (:error
         (setf (tbnl:return-code*) 500)
         (setf (tbnl:content-type*) "text/plain")
-        (tbnl:abort-request-handler "500 - internal server error (fw)"))
+        ;; The :code value is a random token to use in looking up the
+        ;; failure details in the log output
+        (let* ((code (getf response :code))
+               (status "500 - internal server error (fw)")
+               (text (if code
+                         (format nil "~A / ~A" status code)
+                         status)))
+          (tbnl:abort-request-handler
+           (format nil text))))
        (:file
         (tbnl:handle-static-file (getf response :file)
                                  (getf response :content-type)))))))
