@@ -98,8 +98,52 @@
 (defgeneric path (output))
 (defgeneric url (output))
 
+
 ;;; Handlers
 
 (defgeneric app (handler))
 (defgeneric url-path-suffix (handler))
 (defgeneric fun (handler))
+
+
+;;; Relative file reference
+
+(define-condition no-base-directory (error)
+  ((object
+    :initarg :object
+    :reader no-base-directory-object))
+  (:report
+   (lambda (condition stream)
+     (format stream "~A does not have a base directory"
+             (no-base-directory-object condition)))))
+
+(defgeneric base-directory-delegate (object)
+  (:method (object)
+    object))
+
+(defgeneric no-base-directory (object)
+  (:method (object)
+    (error 'no-base-directory :object object)))
+
+(defgeneric base-directory (object)
+  (:method ((object pathname))
+    object)
+  (:method ((object string))
+    (parse-namestring object))
+  (:method ((object t))
+    (no-base-directory object)))
+
+(defmethod base-directory :around ((object t))
+  (let ((value (call-next-method)))
+    (unless value
+      (no-base-directory object))))
+
+(defgeneric relative-to (object pathname)
+  (:method (object pathname)
+    (let ((directory (pathname-directory pathname)))
+      (unless (or (null directory) 
+                  (eql (first directory)
+                       :relative))
+        (error "~A is not a relative pathname" pathname)))
+    (merge-pathnames pathname (base-directory
+                               (base-directory-delegate object)))))

@@ -9,6 +9,12 @@
   ((name
     :initarg :name
     :reader name)
+   (base-directory
+    :initarg :base-directory
+    :reader base-directory)
+   (system-name
+    :initarg :system-name
+    :reader system-name)
    (host
     :initarg :host
     :accessor host)
@@ -64,6 +70,31 @@
     (let ((*package* (find-package :keyword)))
       (format stream "~S" (name object)))))
 
+(defmethod slot-unbound ((class t) (app app) (slot-name (eql 'system-name)))
+  (name app))
+
+(defmethod slot-unbound ((class t) (app app) (slot-name (eql 'base-directory)))
+  (let* ((system (asdf:find-system (system-name app) nil))
+         (home (and system (asdf:system-source-directory system))))
+    (when home
+      (setf (slot-value app 'base-directory) home))))
+
+(defmethod slot-unbound ((class t) (app app)
+                         (slot-name (eql 'static-directory)))
+  (setf (slot-value app 'static-directory)
+        (relative-to app "static/")))
+
+(defmethod slot-unbound ((class t) (app app)
+                         (slot-name (eql 'template-directory)))
+  (setf (slot-value app 'static-directory)
+        (relative-to app "template/")))
+
+(defmethod slot-unbound ((class t) (app app)
+                         (slot-name (eql 'output-directory)))
+  (setf (slot-value app 'static-directory)
+        (relative-to app "output/")))
+
+
 (defmacro define-app (name (&key (class 'app)))
   `(eval-when (:compile-toplevel :load-toplevel :execute)
      (setf (find-app ',name *server*) (make-instance ',class :name ',name))))
@@ -72,7 +103,8 @@
 (defgeneric configuredp (app)
   (:method ((app app))
     (and (slot-set-p app 'host)
-         (slot-set-p app 'url-path-prefix))))
+         (slot-set-p app 'url-path-prefix)
+         (slot-set-p app 'base-directory))))
 
 (defgeneric map-handlers (fun app)
   (:method (fun (app app))
