@@ -71,11 +71,13 @@
 (defgeneric server (app))
 (defgeneric handlers (app))
 (defgeneric name (app))
+(defgeneric system-name (app))
 (defgeneric url-path-prefix (app))
 (defgeneric handlers (app))
 (defgeneric find-handler-function (app))
 (defgeneric find-handler (request app))
 (defgeneric template-directory (app))
+(defgeneric static-directory (app))
 (defgeneric output-directory (app))
 
 (defgeneric app-data (key app))
