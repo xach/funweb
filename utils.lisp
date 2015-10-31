@@ -21,7 +21,9 @@
 
 (defun wild-equals (thing target)
   (or (eql thing t)
+      (equal target t)
       (equal thing "*")
+      (equal target "*")
       (equal thing target)))
 
 (defun slot-set-p (object slot-name)
