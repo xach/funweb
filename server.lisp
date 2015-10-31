@@ -33,7 +33,10 @@
    (apps
     :initarg :apps
     :initform (make-hash-table)
-    :accessor apps)))
+    :accessor apps)
+   (error-log-file
+    :initarg :error-log-file
+    :reader error-log-file)))
 
 (defvar *server* (make-instance 'server))
 
@@ -45,7 +48,8 @@
 
 (defmethod configuredp ((server server))
   (and (slot-set-p server 'host)
-       (slot-set-p server 'port)))
+       (slot-set-p server 'port)
+       (slot-set-p server 'error-log-file)))
 
 (defun acceptor-synced-p (server)
   (let ((acceptor (acceptor server)))
@@ -60,7 +64,7 @@
   (unless (configuredp server)
     (error 'object-not-configured
            :object server
-           :missing-configuration '(host port)))
+           :missing-configuration '(host port error-log-file)))
   (unless (startedp server)
     (map-apps (lambda (app)
                 (unless (configuredp app)
@@ -71,7 +75,10 @@
                                    :address (host server)
                                    :port (port server)
                                    :server server)))
-      (setf (acceptor server) acceptor)
+      (when (error-log-file server)
+        (setf (tbnl:acceptor-message-log-destination acceptor)
+              (error-log-file server)))
+      (setf (tbnl:acceptor-access-log-destination acceptor) nil)
       (hunchentoot:start acceptor)
       (setf (startedp server) t))))
 

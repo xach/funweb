@@ -72,10 +72,14 @@
         ;; The :code value is a random token to use in looking up the
         ;; failure details in the log output
         (let* ((code (getf response :code))
+               (backtrace (getf response :backtrace))
                (status "500 - internal server error (fw)")
                (text (if code
                          (format nil "~A / ~A" status code)
                          status)))
+          (tbnl:log-message* :error "~A~%~A"
+                             code
+                             backtrace)
           (tbnl:abort-request-handler
            (format nil text))))
        (:file
