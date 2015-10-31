@@ -78,6 +78,7 @@
       (when (error-log-file server)
         (setf (tbnl:acceptor-message-log-destination acceptor)
               (error-log-file server)))
+      (setf (acceptor server) acceptor)
       (setf (tbnl:acceptor-access-log-destination acceptor) nil)
       (tbnl:start acceptor)
       (setf (startedp server) t))))
