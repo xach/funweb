@@ -175,7 +175,8 @@
 
 (defun two-level-lookup (table http-method path)
   (let ((t1 (gethash http-method table)))
-    (gethash path t1)))
+    (when t1
+      (gethash path t1))))
 
 (defun app-hosted-url-p (app url)
   "Returns the URL path of URL if it is hosted by the app (e.g. it has the same host and port), NIL otherwise."
