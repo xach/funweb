@@ -74,7 +74,8 @@ invalid)."
 
 (defun make-directory-dispatcher (base-path url-prefix)
   (unless (probe-file base-path)
-    (error "~A cannot be probed" base-path))
+    (cerror "Create it" "~A cannot be probed" base-path )
+    (ensure-directories-exist base-path))
   (let* ((prefix-length (length url-prefix))
          (responder (lambda (request)
                       (let ((path (parse-url-pathname-suffix (url-path request)
