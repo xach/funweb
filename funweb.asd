@@ -1,9 +1,9 @@
 ;;;; funweb.asd
 
 (asdf:defsystem #:funweb
-  :description "Describe funweb here"
-  :author "Your Name <your.name@example.com>"
-  :license "Specify license here"
+  :description "Simple, fun websites"
+  :author "Zach Beane <xach@xach.com>"
+  :license "BSD"
   :depends-on (#:hunchentoot
                #:trivial-backtrace
                #:html-template)
