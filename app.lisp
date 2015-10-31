@@ -183,7 +183,8 @@
   (multiple-value-bind (protocol user host port path)
       (quri:parse-uri url)
     (declare (ignore protocol user port))
-    (when (equalp host (host app))
+    (when (or (null host)
+              (equalp host (host app)))
       path)))
 
 (defun make-handler-dispatcher (app)
