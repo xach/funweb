@@ -6,6 +6,7 @@
   :license "BSD"
   :depends-on (#:hunchentoot
                #:trivial-backtrace
+               #:quri
                #:html-template)
   :serial t
   :components ((:file "package")
