@@ -130,3 +130,18 @@
   ;; FIXME: This is to update the dispatch funs...maybe do it via some
   ;; other method?
   (map-apps (lambda (app) (configure app nil)) server))
+
+(defmethod configure-from-file :after ((server server) file)
+  (map-apps
+   (lambda (app)
+     (format t "; configuring ~A~%" app)
+     (let ((app-config-file
+            (merge-pathnames
+             (make-pathname :name (string-downcase (name app))
+                            :directory (list :relative "apps")
+                            :defaults file)
+             file)))
+       (format t ";; config file: ~A~%" app-config-file)
+       (when (probe-file app-config-file)
+         (configure-from-file app app-config-file))))
+   server))
