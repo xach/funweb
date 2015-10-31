@@ -77,8 +77,9 @@
                (text (if code
                          (format nil "~A / ~A" status code)
                          status)))
-          (tbnl:log-message* :error "~A~%~A"
+          (tbnl:log-message* :error "~A~%~A~%~A"
                              code
+                             (getf response :error)
                              backtrace)
           (tbnl:abort-request-handler
            (format nil text))))
