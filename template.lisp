@@ -17,5 +17,5 @@
                                            values
                                            :stream stream)))
 
-(defun fill-template (name values)
+(defmethod fill-template (name values)
   (fill-app-template name *app* values))
