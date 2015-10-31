@@ -13,7 +13,7 @@
 
 (defun fill-app-template (name app values)
   (with-output-to-string (stream)
-    (html-template:fill-and-print-template (find-template name app)
+    (html-template:fill-and-print-template (find-app-template name app)
                                            values
                                            :stream stream)))
 
