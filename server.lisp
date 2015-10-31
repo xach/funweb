@@ -2,12 +2,12 @@
 
 (in-package #:funweb)
 
-(defclass acceptor (hunchentoot:acceptor)
+(defclass acceptor (tbnl:acceptor)
   ((server
     :initarg :server
     :reader server)))
 
-(defmethod hunchentoot:acceptor-dispatch-request ((acceptor acceptor)
+(defmethod tbnl:acceptor-dispatch-request ((acceptor acceptor)
                                                   request)
   (funcall (dispatcher (server acceptor)) request))
 
@@ -56,9 +56,9 @@
     (when (and acceptor (configuredp server))
       (and
        (equal (host server)
-              (hunchentoot:acceptor-address acceptor))
+              (tbnl:acceptor-address acceptor))
        (equal (port server)
-              (hunchentoot:acceptor-port acceptor))))))
+              (tbnl:acceptor-port acceptor))))))
 
 (defmethod start ((server server))
   (unless (configuredp server)
@@ -79,12 +79,12 @@
         (setf (tbnl:acceptor-message-log-destination acceptor)
               (error-log-file server)))
       (setf (tbnl:acceptor-access-log-destination acceptor) nil)
-      (hunchentoot:start acceptor)
+      (tbnl:start acceptor)
       (setf (startedp server) t))))
 
 (defmethod stop ((server server))
   (when (startedp server)
-    (hunchentoot:stop (acceptor server))
+    (tbnl:stop (acceptor server))
     (setf (startedp server) nil)))
 
 (defun start-server ()
