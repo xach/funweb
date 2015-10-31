@@ -86,12 +86,12 @@
 
 (defmethod slot-unbound ((class t) (app app)
                          (slot-name (eql 'template-directory)))
-  (setf (slot-value app 'static-directory)
+  (setf (slot-value app 'template-directory)
         (relative-to app "template/")))
 
 (defmethod slot-unbound ((class t) (app app)
                          (slot-name (eql 'output-directory)))
-  (setf (slot-value app 'static-directory)
+  (setf (slot-value app 'output-directory)
         (relative-to app "output/")))
 
 
