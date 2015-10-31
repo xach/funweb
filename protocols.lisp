@@ -27,6 +27,7 @@
     :reader object-not-configured-object)
    (missing-configuration
     :initarg :missing-configuration
+    :initform nil
     :reader object-not-configured-missing-configuration))
   (:report
    (lambda (condition stream)
