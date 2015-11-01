@@ -17,9 +17,9 @@
 (defgeneric configure-from-file (object file)
   (:method (object file)
     (with-open-file (stream file)
-      (with-standard-io-syntax
-        (let ((plist (read stream)))
-          (configure object plist))))))
+      (let ((plist (with-standard-io-syntax
+                     (read stream))))
+        (configure object plist)))))
 
 (define-condition object-not-configured (error)
   ((object
