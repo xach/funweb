@@ -17,9 +17,15 @@
            #:request-property)
   (:export #:start-server
            #:stop-server)
+  (:export #:make-output-file
+           #:path
+           #:url)
   (:export #:define-app
            #:define-handler
            #:app-data
+           #:*app*
+           #:static-url
+           #:output-url
            #:fill-template
            #:template-values
            #:make-output-file
@@ -28,5 +34,10 @@
            #:app
            #:no-base-directory
            #:base-directory
-           #:relative-to))
+           #:relative-to)
+  (:export #:make-response
+           #:make-redirection-response
+           #:make-not-found-response
+           #:make-file-response
+           #:make-error-response))
 
