@@ -139,7 +139,8 @@
 (defmethod base-directory :around ((object t))
   (let ((value (call-next-method)))
     (unless value
-      (no-base-directory object))))
+      (no-base-directory object))
+    value))
 
 (defgeneric relative-to (object pathname)
   (:method (object pathname)
