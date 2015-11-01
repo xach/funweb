@@ -104,7 +104,8 @@
   (:method ((app app))
     (and (slot-set-p app 'host)
          (slot-set-p app 'url-path-prefix)
-         (slot-set-p app 'base-directory))))
+         (handler-case (base-directory app)
+           (object-not-configured () nil)))))
 
 (defgeneric map-handlers (fun app)
   (:method (fun (app app))
