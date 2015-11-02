@@ -36,6 +36,9 @@
    (output-url
     :initarg :output-url
     :accessor output-url)
+   (download-url
+    :initarg :download-url
+    :accessor download-url)
    (static-directory
     :initarg :static-directory
     :accessor static-directory)

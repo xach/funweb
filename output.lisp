@@ -27,3 +27,9 @@
 (defmethod url ((output-file output-file))
   (format nil "~A~A" (output-url (app output-file))
           (suffix output-file)))
+
+(defmethod download-url ((output-file output-file))
+  (let ((app (app output-file)))
+    (if (slot-set-p app 'download-url)
+        (format nil "~A~A" (download-url app) (suffix output-file))
+        (url output-file))))

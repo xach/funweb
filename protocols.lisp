@@ -100,6 +100,7 @@
 (defgeneric make-output-file (app name type))
 (defgeneric path (output))
 (defgeneric url (output))
+(defgeneric download-url (output))
 
 
 ;;; Handlers

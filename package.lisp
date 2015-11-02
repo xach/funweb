@@ -19,7 +19,8 @@
            #:stop-server)
   (:export #:make-output-file
            #:path
-           #:url)
+           #:url
+           #:download-url)
   (:export #:define-app
            #:define-handler
            #:app-data
