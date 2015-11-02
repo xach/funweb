@@ -26,7 +26,9 @@
            #:app-data
            #:*app*
            #:static-url
+           #:static-directory
            #:output-url
+           #:output-directory
            #:fill-template
            #:template-values
            #:make-output-file
