@@ -43,3 +43,18 @@
     (if (slot-set-p app 'download-url)
         (format nil "~A~A" (download-url app) (suffix output-file))
         (url output-file))))
+
+(defun enhash-legacy-directory (base file)
+  "Convert the output directory BASE to a two-level hashed
+directory. Used to prep an app for OUTPUT-DIRECTORY-HASHED-P."
+  (let ((wild (make-pathname :directory '(:relative :wild-inferiors)
+                             :defaults file))
+        (count 0))
+    (dolist (legacy-file (directory (merge-pathnames wild base)) count)
+      (let* ((enough (enough-namestring legacy-file base))
+             (hashed (maybe-hash-pathname enough))
+             (new-file (merge-pathnames hashed base)))
+        (unless (equal new-file legacy-file)
+          (ensure-directories-exist new-file)
+          (incf count)
+          (rename-file legacy-file new-file))))))
