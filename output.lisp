@@ -44,7 +44,7 @@
         (format nil "~A~A" (download-url app) (suffix output-file))
         (url output-file))))
 
-(defun enhash-legacy-directory (base file)
+(defun enhash-legacy-directory (base file &key dry-run)
   "Convert the output directory BASE to a two-level hashed
 directory. Used to prep an app for OUTPUT-DIRECTORY-HASHED-P."
   (let ((wild (make-pathname :directory '(:relative :wild-inferiors)
@@ -55,6 +55,7 @@ directory. Used to prep an app for OUTPUT-DIRECTORY-HASHED-P."
              (hashed (maybe-hash-pathname enough))
              (new-file (merge-pathnames hashed base)))
         (unless (equal new-file legacy-file)
-          (ensure-directories-exist new-file)
           (incf count)
-          (rename-file legacy-file new-file))))))
+          (unless dry-run
+            (ensure-directories-exist new-file)
+            (rename-file legacy-file new-file)))))))
