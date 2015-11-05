@@ -19,14 +19,24 @@
                    :suffix suffix
                    :app app)))
 
+(defun hash-suffix (suffix)
+  (let ((a (char suffix 0))
+        (b (char suffix 1)))
+    (format nil "~A/~A/~A" a b suffix)))
 
 (defmethod path ((output-file output-file))
-  (merge-pathnames (pathname (suffix output-file))
-                   (output-directory (app output-file))))
+  (let ((suffix (suffix output-file))
+        (app (app output-file)))
+    (merge-pathnames (pathname
+                      (if (output-directory-hashed-p app)
+                          (hash-suffix suffix)
+                          suffix))
+                     (output-directory app))))
 
 (defmethod url ((output-file output-file))
-  (format nil "~A~A" (output-url (app output-file))
-          (suffix output-file)))
+  (let ((app (app output-file))
+        (suffix (suffix output-file)))
+    (format nil "~A~A" (output-url app) suffix)))
 
 (defmethod download-url ((output-file output-file))
   (let ((app (app output-file)))

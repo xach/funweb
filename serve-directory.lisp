@@ -73,19 +73,32 @@ invalid)."
         (when type-seen
           (marked-parts marks))))))
 
-(defun make-directory-dispatcher (base-path url-prefix)
+
+(defun maybe-hash-pathname (pathname)
+  (or (let* ((directory (pathname-directory pathname))
+             (first-component (and directory (second directory))))
+        (when (and first-component (< 2 (length first-component)))
+          (let ((a (string (char first-component 0)))
+                (b (string (char first-component 1))))
+            (make-pathname :directory (list* :relative a b (rest directory))
+                           :defaults pathname))))
+      pathname))
+
+(defun make-directory-dispatcher (base-path url-prefix &key hashedp)
   (unless (probe-file base-path)
     (cerror "Create it" "~A cannot be probed" base-path )
     (ensure-directories-exist base-path))
   (let* ((prefix-length (length url-prefix))
          (responder (lambda (request)
                       (let ((path (parse-url-pathname-suffix (url-path request)
-                                                            :start prefix-length)))
-                       (when path
-                         (setf path (merge-pathnames path base-path)))
-                       (if (and path (probe-file path))
-                           (make-file-response path)
-                           (make-not-found-response)))) ))
+                                                             :start prefix-length)))
+                        (when path
+                          (when hashedp
+                            (setf path (maybe-hash-pathname path)))
+                          (setf path (merge-pathnames path base-path)))
+                        (if (and path (probe-file path))
+                            (make-file-response path)
+                            (make-not-found-response)))) ))
     (lambda (request)
       (let* ((request-path (url-path request))
              (suffix-start (mismatch request-path url-prefix)))

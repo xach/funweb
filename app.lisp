@@ -33,6 +33,9 @@
    (output-directory
     :initarg :output-directory
     :accessor output-directory)
+   (output-directory-hashed-p
+    :initarg :output-directory-hashed-p
+    :accessor output-directory-hashed-p)
    (output-url
     :initarg :output-url
     :accessor output-url)
@@ -60,6 +63,7 @@
    :url-path-prefix ""
    :handlers (make-hash-table)
    :app-data-table (make-hash-table)
+   :output-directory-hashed-p nil
    :server *server*))
 
 (defmethod initialize-instance :before ((object app) &key name)
@@ -220,7 +224,8 @@
             (list (make-handler-dispatcher app)
                   (when output-path
                     (make-directory-dispatcher (output-directory app)
-                                               output-path))
+                                               output-path
+                                               :hashedp (output-directory-hashed-p app)))
                   (when static-path
                     (make-directory-dispatcher (static-directory app)
                                                static-path))))))
