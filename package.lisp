@@ -6,7 +6,8 @@
   (:export #:configuredp
            #:configure
            #:configure-from-file
-           #:object-not-configured)
+           #:object-not-configured
+           #:example-configuration)
   (:export #:host
            #:port
            #:http-method)
@@ -16,7 +17,9 @@
            #:header-value
            #:request-property)
   (:export #:start-server
-           #:stop-server)
+           #:stop-server
+           #:*server*
+           #:find-app)
   (:export #:make-output-file
            #:path
            #:url

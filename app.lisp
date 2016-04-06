@@ -77,6 +77,16 @@
     (let ((*package* (find-package :keyword)))
       (format stream "~S" (name object)))))
 
+(defmethod example-configuration ((app app))
+  (list :url-path-prefix "/app/"
+        :host "localhost"
+        :base-directory "optional; inferred from system home"
+        :template-directory "optional; defaults to <base>/template/"
+        :static-directory "optional; defaults to <base>/static/"
+        :static-url "http://localhost:8000/app/static/"
+        :output-directory "optional; defaults to <base>/output/"
+        :output-url "http://localhost:8000/app/output/"))
+
 (defmethod slot-unbound ((class t) (app app) (slot-name (eql 'system-name)))
   (name app))
 
@@ -111,6 +121,8 @@
   (:method ((app app))
     (and (slot-set-p app 'host)
          (slot-set-p app 'url-path-prefix)
+         (slot-set-p app 'static-url)
+         (slot-set-p app 'output-url)
          (handler-case (base-directory app)
            (object-not-configured () nil)))))
 

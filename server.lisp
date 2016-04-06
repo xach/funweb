@@ -51,6 +51,11 @@
        (slot-set-p server 'port)
        (slot-set-p server 'error-log-file)))
 
+(defmethod example-configuration ((server server))
+  (list :host "localhost"
+        :port 8000
+        :error-log-file "/tmp/funweb-error.log"))
+
 (defun acceptor-synced-p (server)
   (let ((acceptor (acceptor server)))
     (when (and acceptor (configuredp server))

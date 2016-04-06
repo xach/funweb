@@ -14,6 +14,10 @@
            object
            plist)))
 
+(defgeneric example-configuration (object)
+  (:documentation "Return a plist that shows the configuration options
+  of OBJECT."))
+
 (defgeneric configure-from-file (object file)
   (:method (object file)
     (with-open-file (stream file)
