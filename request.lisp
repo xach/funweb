@@ -23,8 +23,11 @@
   (tbnl:request-method request))
 
 (defmethod parameter-value (name (request tbnl:request))
-  (or (tbnl:get-parameter (string-downcase name) request)
-      (tbnl:post-parameter (string-downcase name) request)))
+  (let ((lookup-name (etypecase name
+                       (symbol (string-downcase name))
+                       (string name))))
+    (or (tbnl:get-parameter lookup-name request)
+        (tbnl:post-parameter lookup-name request))))
 
 (defmethod (setf request-property) (new-value name (request tbnl:request))
   (setf (tbnl:aux-request-value name request) new-value))

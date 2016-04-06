@@ -33,9 +33,19 @@
     `(let* ((,app-var (find-app ',app-name *server*))
             (,fun (named-lambda ,handler-name (*request*)
                     (let ,(loop for parameter in parameters
-                                collect `(,parameter
-                                          (parameter-value ',parameter *request*)))
-                      (declare (ignorable ,@parameters))
+                                for var-name = (if (consp parameter)
+                                                   (first parameter)
+                                                   parameter)
+                                for cgi-name = (if (consp parameter)
+                                                   (second parameteR)
+                                                   parameter)
+                                collect `(,var-name
+                                          (parameter-value ',cgi-name *request*)))
+                      (declare (ignorable ,@(mapcar (lambda (parameter)
+                                                      (if (consp parameter)
+                                                          (first parameter)
+                                                          parameter))
+                                                    parameters)))
                       ,@body)))
             (,handler (find-handler ',http-method ',path-suffix ,app-var)))
        (if ,handler
