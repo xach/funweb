@@ -148,7 +148,7 @@
                             :directory (list :relative "apps")
                             :defaults file)
              file)))
-       (format t ";; config file: ~A~%" app-config-file)
        (when (probe-file app-config-file)
+         (format t ";; config file: ~A~%" app-config-file)
          (configure-from-file app app-config-file))))
    server))
